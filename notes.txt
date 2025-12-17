@@ -1,13 +1,5 @@
 => model 1
-fname: inpaint_places365.pth
-BATCH_SIZE = 16
-NUM_OF_DATASET = 100.000
-EPOCHS = 3
-LR = 1e-3
-SAVE_SAMPLE_INTERVAL = 300
-
-=> model 2
-fname: inpaint_places365-2.pth
+fname: unet.pth
 BATCH_SIZE = 16
 NUM_OF_DATASET = 247.269
 EPOCHS = 3
