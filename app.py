@@ -28,7 +28,7 @@ def load_selected_model(model_name):
         path = "models/unet.pth"
     else:
         model = PConvUNet().to(DEVICE)
-        path = "models/pconv_unet.pth"
+        path = "models/pconv_unet2.pth"
     
     try:
         model.load_state_dict(torch.load(path, map_location=DEVICE))
@@ -40,7 +40,7 @@ def load_selected_model(model_name):
 
 # --- STREAMLIT UI ---
 st.set_page_config(page_title="Inpainting Showcase", layout="wide")
-st.title("🖌️ Image Inpainting Model Demo")
+st.title("Image Inpainting Model Demo")
 
 # Sidebar
 st.sidebar.header("Model Configuration")
@@ -90,16 +90,15 @@ if uploaded_file and model:
                 mask_t = torch.tensor(mask_np_small).unsqueeze(0).unsqueeze(0).to(DEVICE).float()
 
                 # 3. Create Masked Input (Visual feedback)
-                masked_img = img_t * mask_t
 
                 # 4. Predict
                 with torch.no_grad():
-                    if model_choice == "Standard UNet":
-                        # Standard UNet forward(x)
-                        pred = model(masked_img)[0].cpu()
-                    else:
-                        # PConvUNet forward(x, mask)
+                    masked_img = img_t * mask_t
+
+                    if model_choice == "PConv UNet":
                         pred = model(masked_img, mask_t)[0].cpu()
+                    else:
+                        pred = model(masked_img)[0].cpu()
 
                 # 5. Post-processing: Blend prediction into original image holes
                 final_pred = pred * (1 - mask_t.cpu()[0]) + img_t[0].cpu() * mask_t.cpu()[0]
