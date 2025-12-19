@@ -7,6 +7,8 @@ import torchvision.transforms as T
 import torchvision.transforms.functional as TF
 
 from model_archs.unet_arch import UNet
+from model_archs.dilated_arch import DilatedResUNet
+from model_archs.ffc_arch import FFCUnet
 from model_archs.pconv_arch import PConvUNet
 
 # --- CONSTANTS ---
@@ -26,9 +28,15 @@ def load_selected_model(model_name):
     if model_name == "Standard UNet":
         model = UNet().to(DEVICE)
         path = "models/unet.pth"
+    elif model_name == "Dilated UNet":
+        model = DilatedResUNet().to(DEVICE)
+        path = "models/dilated_unet.pth"
+    elif model_name == "FFC Unet":
+        model = FFCUnet().to(DEVICE)
+        path = "models/ffc_unet.pth"
     else:
         model = PConvUNet().to(DEVICE)
-        path = "models/pconv_unet2.pth"
+        path = "models/pconv_unet.pth"
     
     try:
         model.load_state_dict(torch.load(path, map_location=DEVICE))
@@ -44,7 +52,7 @@ st.title("Image Inpainting Model Demo")
 
 # Sidebar
 st.sidebar.header("Model Configuration")
-model_choice = st.sidebar.selectbox("Select Architecture", ["Standard UNet", "PConv UNet"])
+model_choice = st.sidebar.selectbox("Select Architecture", ["Standard UNet", "Dilated UNet", "FFC Unet", "PConv UNet"])
 brush_size = st.sidebar.slider("Brush Size", 5, 50, 20)
 st.sidebar.info(f"Currently using: {model_choice}")
 
